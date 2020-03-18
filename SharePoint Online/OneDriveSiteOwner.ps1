@@ -49,7 +49,7 @@ Else {
 #Set parameter values
 $Debug = $false
 $TenantAdmin = "sander.eek@hcs-company.com"
-$TenantAdminPassword = "Sand1r11k!"
+$TenantAdminPassword = "S3c3t!"
 $SPOAdminURL = "https://hcscompany-admin.sharepoint.com"
 $MyOwnUrl = "sander_eek_hcs-company_com" # Upn where @ and . are replaced by _
 
