@@ -39,7 +39,7 @@ foreach ($user in $users) {
             # $disabledPlans = $disabledPlans | select -Unique 
             #if ($disabledPlans.Length -eq 0) { 
             #    Write-Host("User $upn will go from $oldLicense to $newLicense and will have no options disabled.") 
-            #    #Set-MsolUserLicense -UserPrincipalName $upn -AddLicenses $newLicense -RemoveLicenses $oldLicense  
+            #    Set-MsolUserLicense -UserPrincipalName $upn -AddLicenses $newLicense -RemoveLicenses $oldLicense  
             #}
             #else { 
             $options = New-MsolLicenseOptions -AccountSkuId $newLicense -DisabledPlans $disabledPlans 
