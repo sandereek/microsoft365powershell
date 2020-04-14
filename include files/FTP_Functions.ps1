@@ -1,9 +1,35 @@
+<#
+.SYNOPSIS
+    Generic Include File for various FTP functions
+.DESCRIPTION
+    This Scripts defines functions that can be used to work with files on FTP sites
+.PARAMETERS 
+    None
+.INPUTS
+    None
+.OUTPUTS
+    None
+.NOTES
+  Version:        0.7
+  Author:         Sander Eek
+  Creation Date:  14 april 2020
+  Purpose/Change: Initial script development
+  Last Update:    14 april 2020
+  
+.EXAMPLE
+  .\O365_Pro_Plus_Switch_to_Monthly_Channel.ps1
+#>
+
+
 # Upload Single File
 $FTPServer = "ftp://example.com/"
 $FTPUsername = "username"
 $FTPPassword = "password" 
 $LocalDirectory = "C:\temp\" 
 $FileToUpload = "example.txt"
+
+#-----------------------------------------------------------[Functions]------------------------------------------------------------
+
 
 #Connect to the FTP Server
 $ftp = [System.Net.FtpWebRequest]::create("$FTPServer/$FileToUpload")

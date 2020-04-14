@@ -18,7 +18,7 @@
   
 .EXAMPLE
   .\O365_Pro_Plus_Switch_to_Monthly_Channel.ps1
-# >
+#>
 
 $ErrorActionPreference = "SilentlyContinue"
 
