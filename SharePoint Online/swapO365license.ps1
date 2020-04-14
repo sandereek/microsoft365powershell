@@ -1,4 +1,4 @@
-Import-Module MSOnline 
+Import-Module MSOnline
 $cred = Get-Credential 
 Connect-MsolService -Credential $cred 
  
