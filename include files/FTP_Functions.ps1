@@ -39,9 +39,21 @@ Function FTPDownload() {
     write-host "$(get-date) FTPFileToDownload: "$FTPFileToDownload
     write-host "$(get-date) FTPFileToDownload: "$FTPLocalFile
 
+<<<<<<< HEAD
     # Create a FTPWebRequest
     $FTPRequest = [System.Net.FtpWebRequest]::Create($FTPServer + $FTPFileToDownload)
     $FTPRequest.Credentials = New-Object System.Net.NetworkCredential($FTPUsername, $FTPPassword)
+=======
+    # Config
+    $Username = "FTPUSER"
+    $Password = "P@assw0rd"
+    $LocalFile = "C:\Temp\file.zip"
+    $RemoteFile = "ftp://thomasmaurer.ch/downloads/files/file.zip"
+ 
+    # Create a FTPWebRequest
+    $FTPRequest = [System.Net.FtpWebRequest]::Create($RemoteFile)
+    $FTPRequest.Credentials = New-Object System.Net.NetworkCredential($Username, $Password)
+>>>>>>> d274f51b7d65d1d2a4cacc0013f4d69878858124
     $FTPRequest.Method = [System.Net.WebRequestMethods+Ftp]::DownloadFile
     $FTPRequest.UseBinary = $true
     $FTPRequest.KeepAlive = $false
@@ -50,6 +62,7 @@ Function FTPDownload() {
     # Get a download stream from the server response
     $ResponseStream = $FTPResponse.GetResponseStream()
     # Create the target file on the local system and the download buffer
+<<<<<<< HEAD
     $FTPLocalFileFile = New-Object IO.FileStream ($FTPLocalFile, [IO.FileMode]::Create)
     [byte[]]$ReadBuffer = New-Object byte[] 1024 
     # Loop through the download
@@ -101,6 +114,19 @@ Function FTPUpload() {
 #-----------------------------------------------------------[Test Code]------------------------------------------------------------
 
 $FTPServer = "ftp://homaasfromhome.westus2.cloudapp.azure.com/"
+=======
+    $LocalFileFile = New-Object IO.FileStream ($LocalFile, [IO.FileMode]::Create)
+    [byte[]]$ReadBuffer = New-Object byte[] 1024
+    # Loop through the download
+    do {
+        $ReadLength = $ResponseStream.Read($ReadBuffer, 0, 1024)
+        $LocalFileFile.Write($ReadBuffer, 0, $ReadLength)
+    }
+    while ($ReadLength -ne 0)
+}
+
+$FTPServer = "ftp://homaasfromhome.westus2.cloudapp.azure.com"
+>>>>>>> d274f51b7d65d1d2a4cacc0013f4d69878858124
 $FTPUsername = "homaasftp"
 $FTPPassword = "123Hom@@s!" 
 $FTPFileToUpLoadPath = "C:\temp\"
