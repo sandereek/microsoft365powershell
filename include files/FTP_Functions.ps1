@@ -4,20 +4,27 @@
 .DESCRIPTION
     This Scripts defines functions that can be used to work with files on FTP sites
 .PARAMETERS 
-    None
+    $FTPServer = "ftp://homaasfromhome.westus2.cloudapp.azure.com/"
+    $FTPUsername = "homaasftp"
+    $FTPPassword = "S3cr3t!" 
+    $FTPLocalFilePath = "C:\temp\"
+    $FTPLocalFileName = "file.zip"
 .INPUTS
-    None
+    File to Upload to FTP Server
 .OUTPUTS
-    None
+    File to Download to FTP Server
 .NOTES
-  Version:        0.7
+  Version:        0.8
   Author:         Sander Eek
   Creation Date:  14 april 2020
   Purpose/Change: Initial script development
   Last Update:    14 april 2020
   
 .EXAMPLE
-  .\O365_Pro_Plus_Switch_to_Monthly_Channel.ps1
+  .\FTP_Functions.ps1
+  To Download: FTPDownload -FTPServer $FTPServer -FTPUsername $FTPUsername -FTPPassword $FTPPassword -FTPLocalFilePath $FTPLocalFilePath -FTPLocalFileName $FTPLocalFileName
+  To Upload: FTPUpload -FTPServer $FTPServer -FTPUsername $FTPUsername -FTPPassword $FTPPassword -FTPLocalFilePath $FTPLocalFilePath -FTPLocalFileName $FTPLocalFileName
+
 #>
 
 #-----------------------------------------------------------[Functions]------------------------------------------------------------
@@ -27,37 +34,20 @@ Function FTPDownload() {
         [Parameter(Mandatory = $true)] [string] $FTPServer,
         [Parameter(Mandatory = $true)] [string] $FTPUsername,
         [Parameter(Mandatory = $true)] [string] $FTPPassword,
-        [Parameter(Mandatory = $true)] [string] $FTPDownloadDirectory,
-        [Parameter(Mandatory = $true)] [string] $FTPFileToDownload
+        [Parameter(Mandatory = $true)] [string] $FTPLocalFilePath,
+        [Parameter(Mandatory = $true)] [string] $FTPLocalFileName
     )
-    $FTPLocalFile = $FTPDownloadDirectory + $FTPFileToDownload
-
     write-host "$(get-date) FTPServer: " $FTPServer
     write-host "$(get-date) FTPUser: " $FTPUsername
     write-host "$(get-date) FTPUserPassword: " $FTPPassword
-    write-host "$(get-date) FTPDownloadDirectory: " $FTPDownloadDirectory
-    write-host "$(get-date) FTPFileToDownload: "$FTPFileToDownload
-    write-host "$(get-date) FTPFileToDownload: "$FTPLocalFile
+    write-host "$(get-date) FTPLocalFilePath: " $FTPLocalFilePath
+    write-host "$(get-date) FTPLocalFileName: "$FTPLocalFileName
+    write-host "$(get-date) FTPLocalFileName: "$FTPLocalFile
 
-    # Create a FTPWebRequest
-    $FTPRequest = [System.Net.FtpWebRequest]::Create($FTPServer + $FTPFileToDownload)
-    $FTPRequest.Credentials = New-Object System.Net.NetworkCredential($FTPUsername, $FTPPassword)
-    $FTPRequest.Method = [System.Net.WebRequestMethods+Ftp]::DownloadFile
-    $FTPRequest.UseBinary = $true
-    $FTPRequest.KeepAlive = $false
-    # Send the ftp request
-    $FTPResponse = $FTPRequest.GetResponse()
-    # Get a download stream from the server response
-    $ResponseStream = $FTPResponse.GetResponseStream()
-    # Create the target file on the local system and the download buffer
-    $FTPLocalFileFile = New-Object IO.FileStream ($FTPLocalFile, [IO.FileMode]::Create)
-    [byte[]]$ReadBuffer = New-Object byte[] 1024 
-    # Loop through the download
-    do {
-        $ReadLength = $ResponseStream.Read($ReadBuffer, 0, 1024)
-        $FTPLocalFileFile.Write($ReadBuffer, 0, $ReadLength)
-    }
-    while ($ReadLength -ne 0)
+    $webclient = New-Object System.Net.WebClient
+    $webclient.Credentials = New-Object System.Net.NetworkCredential($FTPUsername,$FTPPassword)
+    $uri = New-Object System.Uri($FTPServer + $FTPLocalFileName)
+    $webclient.DownloadFile($uri,$FTPLocalFilePath + $FTPLocalFileName)
 }
 
 Function FTPUpload() {
@@ -66,12 +56,12 @@ Function FTPUpload() {
         [Parameter(Mandatory = $true)] [string] $FTPServer,
         [Parameter(Mandatory = $true)] [string] $FTPUsername,
         [Parameter(Mandatory = $true)] [string] $FTPPassword,
-        [Parameter(Mandatory = $true)] [string] $FTPFileToUploadPath,
-        [Parameter(Mandatory = $true)] [string] $FTPFileToUploadName
+        [Parameter(Mandatory = $true)] [string] $FTPLocalFilePath,
+        [Parameter(Mandatory = $true)] [string] $FTPLocalFileName
     )
 
-    $FTPFileToUpload = $FTPFileToUploadPath + $FTPFileToUploadName
-    $FTPRemoteFile = $FTPServer + $FTPFileToUploadName
+    $FTPFileToUpload = $FTPLocalFilePath + $FTPLocalFileName
+    $FTPRemoteFile = $FTPServer + $FTPLocalFileName
     write-host "$(get-date) FTPServer: " $FTPServer
     write-host "$(get-date) FTPUser: " $FTPUsername
     write-host "$(get-date) FTPUserPassword: " $FTPPassword
@@ -96,19 +86,3 @@ Function FTPUpload() {
     $Run.Dispose()
 
 }
-
-
-#-----------------------------------------------------------[Test Code]------------------------------------------------------------
-
-$FTPServer = "ftp://homaasfromhome.westus2.cloudapp.azure.com/"
-$FTPUsername = "homaasftp"
-$FTPPassword = "123Hom@@s!" 
-$FTPFileToUpLoadPath = "C:\temp\"
-$FTPFileToUploadName = "lucy2015.txt"
-
-
-# FTPDownload -FTPServer $FTPServer -FTPUsername $FTPUsername -FTPPassword $FTPPassword `
-# -FTPDownloadDirectory $FTPDownloadDirectory -FTPFileToDownload $FTPFileToDownload
-
-FTPUpload -FTPServer $FTPServer -FTPUsername $FTPUsername -FTPPassword $FTPPassword `
--FTPFileToUploadPath $FTPFileToUploadPath -FTPFileToUploadName $FTPFileToUploadName
