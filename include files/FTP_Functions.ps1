@@ -4,20 +4,27 @@
 .DESCRIPTION
     This Scripts defines functions that can be used to work with files on FTP sites
 .PARAMETERS 
-    None
+    $FTPServer = "ftp://homaasfromhome.westus2.cloudapp.azure.com/"
+    $FTPUsername = "homaasftp"
+    $FTPPassword = "S3cr3t!" 
+    $FTPLocalFilePath = "C:\temp\"
+    $FTPLocalFileName = "file.zip"
 .INPUTS
-    None
+    File to Upload to FTP Server
 .OUTPUTS
-    None
+    File to Download to FTP Server
 .NOTES
-  Version:        0.7
+  Version:        0.8
   Author:         Sander Eek
   Creation Date:  14 april 2020
   Purpose/Change: Initial script development
   Last Update:    14 april 2020
   
 .EXAMPLE
-  .\O365_Pro_Plus_Switch_to_Monthly_Channel.ps1
+  .\FTP_Functions.ps1
+  To Download: FTPDownload -FTPServer $FTPServer -FTPUsername $FTPUsername -FTPPassword $FTPPassword -FTPLocalFilePath $FTPLocalFilePath -FTPLocalFileName $FTPLocalFileName
+  To Upload: FTPUpload -FTPServer $FTPServer -FTPUsername $FTPUsername -FTPPassword $FTPPassword -FTPLocalFilePath $FTPLocalFilePath -FTPLocalFileName $FTPLocalFileName
+
 #>
 
 #-----------------------------------------------------------[Functions]------------------------------------------------------------
@@ -27,9 +34,10 @@ Function FTPDownload() {
         [Parameter(Mandatory = $true)] [string] $FTPServer,
         [Parameter(Mandatory = $true)] [string] $FTPUsername,
         [Parameter(Mandatory = $true)] [string] $FTPPassword,
-        [Parameter(Mandatory = $true)] [string] $FTPDownloadDirectory,
-        [Parameter(Mandatory = $true)] [string] $FTPFileToDownload
+        [Parameter(Mandatory = $true)] [string] $FTPLocalFilePath,
+        [Parameter(Mandatory = $true)] [string] $FTPLocalFileName
     )
+<<<<<<< HEAD
     $FTPLocalFile = $FTPDownloadDirectory + $FTPFileToDownload
 
     write-host "$(get-date) FTPServer: " $FTPServer
@@ -58,6 +66,19 @@ Function FTPDownload() {
         $FTPLocalFileFile.Write($ReadBuffer, 0, $ReadLength)
     }
     while ($ReadLength -ne 0)
+=======
+    write-host "$(get-date) FTPServer: " $FTPServer
+    write-host "$(get-date) FTPUser: " $FTPUsername
+    write-host "$(get-date) FTPUserPassword: " $FTPPassword
+    write-host "$(get-date) FTPLocalFilePath: " $FTPLocalFilePath
+    write-host "$(get-date) FTPLocalFileName: "$FTPLocalFileName
+    write-host "$(get-date) FTPLocalFileName: "$FTPLocalFile
+
+    $webclient = New-Object System.Net.WebClient
+    $webclient.Credentials = New-Object System.Net.NetworkCredential($FTPUsername,$FTPPassword)
+    $uri = New-Object System.Uri($FTPServer + $FTPLocalFileName)
+    $webclient.DownloadFile($uri,$FTPLocalFilePath + $FTPLocalFileName)
+>>>>>>> 81b87f39dd58a54f2e6775f68632de0a45391048
 }
 
 Function FTPUpload() {
@@ -66,12 +87,21 @@ Function FTPUpload() {
         [Parameter(Mandatory = $true)] [string] $FTPServer,
         [Parameter(Mandatory = $true)] [string] $FTPUsername,
         [Parameter(Mandatory = $true)] [string] $FTPPassword,
+<<<<<<< HEAD
         [Parameter(Mandatory = $true)] [string] $FTPFileToUploadPath,
         [Parameter(Mandatory = $true)] [string] $FTPFileToUploadName
     )
 
     $FTPFileToUpload = $FTPFileToUploadPath + $FTPFileToUploadName
     $FTPRemoteFile = $FTPServer + $FTPFileToUploadName
+=======
+        [Parameter(Mandatory = $true)] [string] $FTPLocalFilePath,
+        [Parameter(Mandatory = $true)] [string] $FTPLocalFileName
+    )
+
+    $FTPFileToUpload = $FTPLocalFilePath + $FTPLocalFileName
+    $FTPRemoteFile = $FTPServer + $FTPLocalFileName
+>>>>>>> 81b87f39dd58a54f2e6775f68632de0a45391048
     write-host "$(get-date) FTPServer: " $FTPServer
     write-host "$(get-date) FTPUser: " $FTPUsername
     write-host "$(get-date) FTPUserPassword: " $FTPPassword
@@ -94,6 +124,7 @@ Function FTPUpload() {
     # Cleanup
     $Run.Close()
     $Run.Dispose()
+<<<<<<< HEAD
 
 }
 
@@ -112,3 +143,7 @@ $FTPFileToUploadName = "lucy2015.txt"
 
 FTPUpload -FTPServer $FTPServer -FTPUsername $FTPUsername -FTPPassword $FTPPassword `
 -FTPFileToUploadPath $FTPFileToUploadPath -FTPFileToUploadName $FTPFileToUploadName
+=======
+
+}
+>>>>>>> 81b87f39dd58a54f2e6775f68632de0a45391048
